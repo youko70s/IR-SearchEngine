@@ -18,84 +18,6 @@ import pickle
 from nltk.stem import PorterStemmer 
 from collections import defaultdict
 
-def process_dates(text):
-    '''given some text, we want to process January 1, 2019 such as this format 
-    '''
-    ### case 1
-    try:
-        text = text.lower()
-        months = {'january':'01','february':'02','march':'03','april':'04',\
-                      'may':'05','june':'06','july':'80','august':'08','september':'09',\
-                      'october':'10','november':'11','december':'12','jan':'01','feb':'02','mar':'03',\
-                      'apr':'04',\
-                      'may':'05','jun':'06','jul':'07','aug':'08','sep':'09',\
-                      'oct':'10','nov':'11','dec':'12'}
-        month_name_type = re.findall(r'[jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?]+\s+\d{1,2},\s*\d{4}',text)
-    
-        for item in month_name_type:
-            result = re.sub(r'(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2}),\s*(\d{4})', r'\1/\2/\3',item.rstrip())
-            #plain = result.lower()
-            k = result.split('/')
-            # check if it is valid date
-            mm = int(months[k[0]])
-            dd = int(k[1])
-            yy = int(k[2])
-            correctDate = None
-            try:
-                newdate = datetime(yy,mm,dd)
-                correctDate = True
-            except ValueError:
-                correctDate = False
-                
-            if correctDate:
-    
-                new_res = result.replace(k[0],months[k[0]])
-                text = text.replace(item, new_res) 
-            else:
-                # not valid date
-                continue
-        # case 2
-        num_type = re.findall(r'\d+\-\d+\-\d+',text)
-        for item in num_type:
-            #z = re.findall(r'(\d+)\-(\d+)\-(\d+)',word)[0]
-            result = re.sub(r'(\d+)\-(\d+)\-(\d+)',r'\1/\2/\3',item.rstrip())
-            # check if its valid date
-            k = result.split('/')
-            mm = int(k[0])
-            dd = int(k[1])
-            yy = int(k[2])
-            correctDate = None
-            try:
-                newdate = datetime.datetime(yy,mm,dd)
-                correctDate = True
-            except ValueError:
-                correctDate = False
-            if correctDate:
-                text = text.replace(item, result)
-            else: 
-                continue 
-    except:
-        pass
-           
-    return text
-
-
-def strip_text(doc):
-    '''given a document, stores its DOCNO, and stripped text into a dictionary
-    '''
-    d = {}
-    DOCNO = re.findall(r"<DOCNO>([\s\S]*?)<\/DOCNO>",doc)[0]
-    text = re.findall(r"<TEXT>([\s\S]*?)<\/TEXT>",doc)[0]
-    # remove comments
-    cleaned_text = re.sub(r"<!--[\s\S]*?-->", "", text)
-    # remove \n
-    new_txt = re.sub("\n", " ", cleaned_text)
-    text = process_dates(new_txt)
-    d['DOCNO'] = DOCNO
-    # lower_case
-    d['text'] = text.lower()
-    return d
-
 
 class Parser:
     def __init__(self, stop_word_path):
@@ -110,7 +32,7 @@ class Parser:
         self.special_toks = []
         self.two_grams = []
         self.three_grams = []
-    
+
     def digit_format(self,text):
         ''' for some given text, we want to process the digital formats
         '''
@@ -127,7 +49,7 @@ class Parser:
             result = re.sub(r'(\d+),(\d+)($|[\s|\.|\,|!|\"|\'|=|)|(|//|\\])',r'\1\2',text.rstrip())
 
         return result 
-    
+        
     def special_tokens(self,word):
         '''given some word, we want to preprocess it
         '''
@@ -358,6 +280,67 @@ class Indexer:
         # set system argument for memory constraint
         #self.limit = 1000
         
+    def process_dates(self,text):
+        '''given some text, we want to process January 1, 2019 such as this format 
+        '''
+        ### case 1
+        try:
+            text = text.lower()
+            months = {'january':'01','february':'02','march':'03','april':'04',\
+                        'may':'05','june':'06','july':'80','august':'08','september':'09',\
+                        'october':'10','november':'11','december':'12','jan':'01','feb':'02','mar':'03',\
+                        'apr':'04',\
+                        'may':'05','jun':'06','jul':'07','aug':'08','sep':'09',\
+                        'oct':'10','nov':'11','dec':'12'}
+            month_name_type = re.findall(r'[jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?]+\s+\d{1,2},\s*\d{4}',text)
+        
+            for item in month_name_type:
+                result = re.sub(r'(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2}),\s*(\d{4})', r'\1/\2/\3',item.rstrip())
+                #plain = result.lower()
+                k = result.split('/')
+                # check if it is valid date
+                mm = int(months[k[0]])
+                dd = int(k[1])
+                yy = int(k[2])
+                correctDate = None
+                try:
+                    newdate = datetime(yy,mm,dd)
+                    correctDate = True
+                except ValueError:
+                    correctDate = False
+                    
+                if correctDate:
+        
+                    new_res = result.replace(k[0],months[k[0]])
+                    text = text.replace(item, new_res) 
+                else:
+                    # not valid date
+                    continue
+            # case 2
+            num_type = re.findall(r'\d+\-\d+\-\d+',text)
+            for item in num_type:
+                #z = re.findall(r'(\d+)\-(\d+)\-(\d+)',word)[0]
+                result = re.sub(r'(\d+)\-(\d+)\-(\d+)',r'\1/\2/\3',item.rstrip())
+                # check if its valid date
+                k = result.split('/')
+                mm = int(k[0])
+                dd = int(k[1])
+                yy = int(k[2])
+                correctDate = None
+                try:
+                    newdate = datetime.datetime(yy,mm,dd)
+                    correctDate = True
+                except ValueError:
+                    correctDate = False
+                if correctDate:
+                    text = text.replace(item, result)
+                else: 
+                    continue 
+        except:
+            pass
+            
+        return text
+
     def _set_of_stopwords(self, path):
         '''
         create set of words from stop-words file
@@ -369,15 +352,30 @@ class Indexer:
         with open(path) as f:
             return set((line.strip() for line in f.readlines()))
     
+    def strip_text(self,doc):
+        '''given a document, stores its DOCNO, and stripped text into a dictionary
+        '''
+        d = {}
+        DOCNO = re.findall(r"<DOCNO>([\s\S]*?)<\/DOCNO>",doc)[0]
+        text = re.findall(r"<TEXT>([\s\S]*?)<\/TEXT>",doc)[0]
+        # remove comments
+        cleaned_text = re.sub(r"<!--[\s\S]*?-->", "", text)
+        # remove \n
+        new_txt = re.sub("\n", " ", cleaned_text)
+        text = self.process_dates(new_txt)
+        d['DOCNO'] = DOCNO
+        # lower_case
+        d['text'] = text.lower()
+        return d
+    
     def single_term_index(self,doc):
         '''accept a doc, by assumption, it will not exceed the memory constraint
         '''
         #single_term = {}
         # will include four parts: term, docID, tf
-        stripped_dict = strip_text(doc)
+        stripped_dict = self.strip_text(doc)
         text = stripped_dict['text']
         # before parse it, we change all date formats
-       # text = process_dates(text)
         tokenizer = Parser('stops.txt')
         terms = tokenizer.parse(text)
         single = {}
@@ -409,7 +407,7 @@ class Indexer:
         
         ps = PorterStemmer()
         #wnl = WordNetLemmatizer()
-        stripped_dict = strip_text(doc)
+        stripped_dict = self.strip_text(doc)
         text = stripped_dict['text']
         tokenizer = Parser('stops.txt')
         terms = tokenizer.parse(text)
@@ -432,7 +430,7 @@ class Indexer:
             and store it as a list 
             here we do not skip stop_words or special tokens
         '''
-        stripped_dict = strip_text(doc)
+        stripped_dict = self.strip_text(doc)
         text = stripped_dict['text']
         tokenizer = Parser('stops.txt')
         terms = tokenizer.parse(text)
@@ -459,7 +457,7 @@ class Indexer:
     def phrase_index(self,doc):
         '''given some document, we want to get all the frequency index of all 2gram phrases and 3gram phrases
         '''
-        stripped_dict = strip_text(doc)
+        stripped_dict = self.strip_text(doc)
         text = stripped_dict ['text']
         tokenizer = Parser('stops.txt')
         tokenizer.generate_phrases(text)
@@ -482,7 +480,7 @@ class Indexer:
                 pass
         self.phrases += sorted(grams.items())
     
-    def parse_single_terms(self,files,limit):
+    def parse_single_terms(self,files_path,files,limit):
         ''' 
         this function will parse everything in a single given collection
         '''
@@ -491,7 +489,7 @@ class Indexer:
         if not os.path.isdir(path):
             os.mkdir(path)
         for file in files:    
-            coll = open(file)
+            coll = open(files_path+file)
             doc = ""
             i = 0
             for line in coll:
@@ -529,7 +527,7 @@ class Indexer:
             f.close()
             self.single_term = []
     
-    def parse_stem(self,files,limit):
+    def parse_stem(self,files_path,files,limit):
         ''' 
         this function will parse everything in a single given collection
         '''
@@ -538,7 +536,7 @@ class Indexer:
         if not os.path.isdir(path):
             os.mkdir(path)
         for file in files:    
-            coll = open(file)
+            coll = open(files_path+file)
             doc = ""
             i = 0
             for line in coll:
@@ -576,7 +574,7 @@ class Indexer:
                        
             self.stemmed = []
             
-    def parse_phrases(self,files,limit):
+    def parse_phrases(self,files_path,files,limit):
         ''' 
         this function will parse everything in a single given collection
         '''
@@ -585,7 +583,7 @@ class Indexer:
         if not os.path.isdir(path):
             os.mkdir(path)
         for file in files:    
-            coll = open(file)
+            coll = open(files_path+file)
             doc = ""
             i = 0
             for line in coll:
@@ -622,7 +620,7 @@ class Indexer:
             f.close()           
             self.phrases = []
    
-    def parse_positional(self,files,limit):
+    def parse_positional(self,files_path,files,limit):
         ''' 
         this function will parse everything in a single given collection
         '''
@@ -631,7 +629,7 @@ class Indexer:
         if not os.path.isdir(path):
             os.mkdir(path)
         for file in files:    
-            coll = open(file)
+            coll = open(files_path+file)
             doc = ""
             i = 0
             for line in coll:
@@ -728,22 +726,22 @@ def merge_temps(limit,dirname):
 
 def main(files_path,index_name,output_dir):
     #limit = sys.argv[1]
-    # using default limit as 10000
+    # using default limit as 100000
     files = os.listdir(files_path)
-    limit = 10000
+    limit = 100000
     stage = {'single':'single_term_index','phrase':'phrases','stem':'stem_index','positional':'positional_index'}
     #with open('results.txt','a') as f:
     print('Starting indexing...'+'(default memory constraint: '+str(limit)+')'+'\n')
     
     indexer = Indexer('stops.txt')
     if index_name == 'positional':
-        indexer.parse_positional(files,limit)
+        indexer.parse_positional(files_path,files,limit)
     if index_name == 'phrase':
-        indexer.parse_phrases(files,limit)
+        indexer.parse_phrases(files_path,files,limit)
     if index_name == 'stem':
-        indexer.parse_stem(files,limit)
+        indexer.parse_stem(files_path,files,limit)
     if index_name == 'single':
-        indexer.parse_single_terms(files,limit)
+        indexer.parse_single_terms(files_path,files,limit)
     
     print('Finished indexing.'+'\n')
     
