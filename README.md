@@ -1,18 +1,27 @@
 # IR-SearchEngine
 This repository provides a classical implementation of information retieval search engine buillt from scratch. 
 
-
 In this repo, I already provided some sample trec documents in [trec_files](https://github.com/youko70s/IR-SearchEngine/tree/master/trec_files). (See information about trec: [TREC](https://trec.nist.gov/)); I also provided a sample queryfile for retrieving relavant documents.
 
 Copy paste the following command line to clone this repository to your local:
 
-    git clone https://github.com/youko70s/IR-SearchEngine.git
+    $ git clone https://github.com/youko70s/IR-SearchEngine.git
 
 Once being cloned, go to your local directory `IR-SearchEngine`.
 
+## Installation
+
+All libraries are standard python libraries. However, you have to install nltk as to import PorterStemmer. 
+
+
+Run the following command in your terminal:
+
+    $ pip install -r requirements.txt
+
+
 ## building the index 
 
-    python build.py [trec-files-dir-path] [index-type] [output-dir]
+    $ python build.py [trec-files-dir-path] [index-type] [output-dir]
 
 Builds the index, accepts 3 arguments
 
@@ -22,7 +31,7 @@ Builds the index, accepts 3 arguments
 
 example command for building the index:
 
-    python build.py ./trec_files/ stem ./my_indexes/
+    $ python build.py ./trec_files/ stem ./my_indexes/
 
 ## query processing
 
@@ -31,7 +40,7 @@ We provided two methods for processing queries and retrieving relavant documents
 ### static query
 
 
-    python query.py [index-dir-path] [query-file-path] [metric] [index-type] [results-file]
+    $ python query.py [index-dir-path] [query-file-path] [metric] [index-type] [results-file]
 
 * `[index-dir-path]` takes the path of the directory where you store your index files (note that it should align with what you specified in the building phase)
 * `[query-file-path]` path to the query file
@@ -45,11 +54,11 @@ In static query processing, we will use either single term index or stem index f
 
 example command for static query processing:
 
-    python query.py ./my_indexes/ ./data/queryfile.txt bm25 single ./results/single_bm25.txt
+    $ python query.py ./my_indexes/ ./data/queryfile.txt bm25 single ./results/single_bm25.txt
 
 ### dynamic query
 
-    python query_dynamic.py [index-dir-path] [query-file-path] [results-file]
+    $ python query_dynamic.py [index-dir-path] [query-file-path] [results-file]
 
 Same as static query processing, except that in this case, we are using phrase index together with positional index for dynamically retrieving purpose based on some thresholds (I already provided default thresholds in the script files, but you can also alter these thresholds yourself). Takes 3 arguments:
 
@@ -59,6 +68,6 @@ Same as static query processing, except that in this case, we are using phrase i
 
 example command for dynamic query processing:
 
-    python query_dynamic.py ./my_indexes/ ./data/queryfile.txt ./results/dynamic.txt
+    $ python query_dynamic.py ./my_indexes/ ./data/queryfile.txt ./results/dynamic.txt
 
 
