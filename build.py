@@ -9,14 +9,12 @@ Created on Tue Sep 18 11:10:26 2019
 import os
 import sys
 import re
-import statistics
-from statistics import median
 import datetime
 from datetime import datetime
 import time 
 import pickle
 from nltk.stem import PorterStemmer 
-from collections import defaultdict
+import shutil
 
 
 class Parser:
@@ -277,6 +275,7 @@ class Indexer:
         self.stemmed = []
         self.term_positions = []
         self.phrases = []
+        
         # set system argument for memory constraint
         #self.limit = 1000
         
@@ -723,6 +722,50 @@ def merge_temps(limit,dirname):
             os.remove(file1)
             os.remove(file2)    
 
+def get_doc_length(collections,index_):
+    ''' will return a dict of all documents and their terms
+    we didnt exclude any stopwords or do any stemming here
+    also, we didnt unlist specical_toks
+    '''
+    doc_dict = {}
+    indexer = Indexer('stops.txt')
+    for file in collections:    
+        coll = open(file)
+        doc = ""
+        i = 0
+        for line in coll:
+            if '</DOC>' not in line:
+                doc+=' '
+                doc+=line
+            else:
+                # reach the end of one document 
+                # pass this document 
+                mydoc = doc
+                doc = ""
+                d = indexer.strip_text(mydoc)     
+                #doc_dict[d['DOCNO']] = {}
+                if index_ == 'single_term_index':
+                    indexer.single_term_index(mydoc)
+                    doc_dict[d['DOCNO']] = len(indexer.single_term)
+                    
+                if index_ == 'stem_index':
+                    indexer.stem_index(mydoc)
+                    doc_dict[d['DOCNO']] = len(indexer.stemmed)
+                if index_ == 'positional_index':
+                    indexer.positional_index(mydoc)
+                    doc_dict[d['DOCNO']] = len(indexer.term_positions)
+                if index_ == 'phrases':
+                    indexer.phrase_index(mydoc)
+                    doc_dict[d['DOCNO']] = len(indexer.phrases)
+                # for tpl in term_list:
+                  #  lexi,info = tpl
+                   # if index_ == 'positional_index':
+                    #    doc_dict[d['DOCNO']][lexi] = info['pos']
+                    #else:
+                     #   doc_dict[d['DOCNO']][lexi] = info['tf']
+                
+            
+    return doc_dict
 
 def main(files_path,index_name,output_dir):
     #limit = sys.argv[1]
@@ -731,6 +774,7 @@ def main(files_path,index_name,output_dir):
     limit = 100000
     stage = {'single':'single_term_index','phrase':'phrases','stem':'stem_index','positional':'positional_index'}
     #with open('results.txt','a') as f:
+    start = time.time()
     print('Starting indexing...'+'(default memory constraint: '+str(limit)+')'+'\n')
     
     indexer = Indexer('stops.txt')
@@ -766,13 +810,25 @@ def main(files_path,index_name,output_dir):
         else:
             lexicon[term].append(pl)
             line = f.readline()
-
-    print('Finished building inverted index. '+'\n')
+    
+    run_time = time.time()-start
+    print('Finished building inverted index.'+'\n'+'Running time: '+str(run_time)+'\n')
     # save the built results to output dir
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
     output = output_dir+'idf_'+str(limit)+'_'+str(stage[index_name])+'.pkl'
     pickle.dump(lexicon, open(output, "wb"))
+    
+    print('Backing-up document length files...'+'\n')
+    # back up necessary document length files
+    if not os.path.isdir('./document_length_dict/'):
+        os.mkdir('./document_length_dict/')
+    doc_len = get_doc_length(files,stage[index_name])
+    output = './document_length_dict/'+index_name+'_doc_length.pkl'
+    pickle.dump(doc_len, open(output, "wb"))
+    print('Finished backing up document length files.'+'\n')
+    # remove folder for holding temporary files
+
     
 if __name__ == "__main__":
     files_path = sys.argv[1]
@@ -781,5 +837,7 @@ if __name__ == "__main__":
     main(files_path,index_name,output_dir)
 
 
-    
-        
+
+
+
+
