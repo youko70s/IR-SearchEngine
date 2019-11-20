@@ -24,5 +24,23 @@ example command for building the index:
 
     python build.py ./trec_files/ stem ./my_indexes/
 
+### query processing
+
+We provided two methods for processing queries and retrieving relavant documents. 
+
+#### static query
+
+
+    python query.py [index-dir-path] [query-file-path] [metric] [index-type] [results-file]
+
+* `[index-dir-path]` takes the path of the directory where you store your index files (note that it should align with what you specified in the building phase)
+* `[query-file-path]` path to the query file
+* `[metric]` retrieval model used for searching documents. Can be one of the following: 'cosine', 'bm25', 'lm'
+* `[index-type]` one of the following: 'single', 'stem'
+* `[results-file]` path to the results file that you are going to store the retrieval results
+
+We provided two methods for processing queries and retrieving relavant documents. 
+
+In static query processing, we will use either single term index or stem index for retrieving purpose. For better understanding of application mechanism and easier evaluation on the engine's performance, we will use the TREC query sample file identified by their unique numbers. In this phase, we only use `title` part of the queries for retrieving documents. 
 
 
