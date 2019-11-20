@@ -6,7 +6,7 @@ In this repo, I already provided some sample trec documents in [trec_files](http
 
 clone this repository to your local:
 
-    ```git clone https://github.com/youko70s/IR-SearchEngine.git```
+    git clone https://github.com/youko70s/IR-SearchEngine.git
 
 once cloned, go to your local directory `IR-SearchEngine`.
 
