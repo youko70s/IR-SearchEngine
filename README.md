@@ -43,4 +43,22 @@ We provided two methods for processing queries and retrieving relavant documents
 
 In static query processing, we will use either single term index or stem index for retrieving purpose. For better understanding of application mechanism and easier evaluation on the engine's performance, we will use the TREC query sample file identified by their unique numbers. In this phase, we only use `title` part of the queries for retrieving documents. 
 
+example command for static query processing:
+
+    python query.py ./my_indexes/ ./data/queryfile.txt bm25 single ./results/single_bm25.txt
+
+### dynamic query
+
+    python query_dynamic.py [index-dir-path] [query-file-path] [results-file]
+
+Same as static query processing, except that in this case, we are using phrase index together with positional index for dynamically retrieving purpose based on some thresholds (I already provided default thresholds in the script files, but you can also alter these thresholds yourself). Takes 3 arguments:
+
+* `[index-dir-path]` path to the directory where you store your index files at the building phase
+* `[query-file-path]` path to the query file
+* `[results-file]` path to the results file that you are going to store the retrieval results
+
+example command for dynamic query processing:
+
+    python query_dynamic.py ./my_indexes/ ./data/queryfile.txt ./results/dynamic.txt
+
 
