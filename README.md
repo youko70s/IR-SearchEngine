@@ -1,7 +1,7 @@
 # IR-SearchEngine
 This repository provides a classical implementation of information retieval search engine buillt from scratch. 
 
-## How to run 
+
 In this repo, I already provided some sample trec documents in [trec_files](https://github.com/youko70s/IR-SearchEngine/tree/master/trec_files). (See information about trec: [TREC](https://trec.nist.gov/)); I also provided a sample queryfile for retrieving relavant documents.
 
 Copy paste the following command line to clone this repository to your local:
@@ -10,7 +10,7 @@ Copy paste the following command line to clone this repository to your local:
 
 Once being cloned, go to your local directory `IR-SearchEngine`.
 
-### building the index 
+## building the index 
 
     python build.py [trec-files-dir-path] [index-type] [output-dir]
 
@@ -24,11 +24,11 @@ example command for building the index:
 
     python build.py ./trec_files/ stem ./my_indexes/
 
-### query processing
+## query processing
 
 We provided two methods for processing queries and retrieving relavant documents. 
 
-#### static query
+### static query
 
 
     python query.py [index-dir-path] [query-file-path] [metric] [index-type] [results-file]
