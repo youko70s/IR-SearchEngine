@@ -11,7 +11,7 @@ Once being cloned, go to your local directory `IR-SearchEngine`.
 
 ## Installation
 
-All libraries are standard python libraries. However, you have to install nltk as to import PorterStemmer. 
+All libraries are standard python libraries. However, you have to install `nltk` as to import PorterStemmer. 
 
 
 Run the following command in your terminal:
@@ -19,7 +19,7 @@ Run the following command in your terminal:
     $ pip install -r requirements.txt
 
 
-## building the index 
+## Building the Index 
 
     $ python build.py [trec-files-dir-path] [index-type] [output-dir]
 
@@ -33,7 +33,7 @@ example command for building the index:
 
     $ python build.py ./trec_files/ stem ./my_indexes/
 
-## query processing
+## Query Processing
 
 We provided two methods for processing queries and retrieving relavant documents. 
 
