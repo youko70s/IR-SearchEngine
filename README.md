@@ -37,7 +37,7 @@ example command for building the index:
 
 We provided two methods for processing queries and retrieving relavant documents. 
 
-### static query
+### Static Query
 
 
     $ python query.py [index-dir-path] [query-file-path] [metric] [index-type] [results-file]
@@ -56,7 +56,7 @@ example command for static query processing:
 
     $ python query.py ./my_indexes/ ./data/queryfile.txt bm25 single ./results/single_bm25.txt
 
-### dynamic query
+### Dynamic Query
 
     $ python query_dynamic.py [index-dir-path] [query-file-path] [results-file]
 
