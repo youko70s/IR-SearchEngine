@@ -38,14 +38,14 @@ def preprocess_query(query,index_):
                 res.append(i)
         else:
             res.append(item)
-    if index_ == 'single_term_index':
+    if index_ == 'single':
         new_res = [term for term in res if term not in stop_words]
-    if index_ == 'stem_index':
+    if index_ == 'stem':
         ps = PorterStemmer()
         new_res = [ps.stem(term) for term in res if term not in stop_words]
-    if index_ == 'positional_index':
+    if index_ == 'positional':
         new_res = res
-    if index_ == 'phrases':
+    if index_ == 'phrase':
         tokenizer.generate_phrases(query)
         new_res = tokenizer.two_grams+tokenizer.three_grams
     return new_res
@@ -113,7 +113,7 @@ class Ranker:
         for item in raw_pl:
             json_str = item.replace("'", "\"")
             d = json.loads(json_str)
-            if index_ == 'positional_index':
+            if index_ == 'positional':
                 new_pl[d['DOCNO']] = d['pos']
             else:
                 new_pl[d['DOCNO']] = d['tf']
@@ -185,7 +185,7 @@ class Ranker:
             tf = query.count(term)
             df = len(pl)
             idf = math.log10(N/df)
-            return tf*idf
+            return tf*idf 
     
         
     def cosine_similarity(self,query,DOCNO,index_):
@@ -283,8 +283,8 @@ class Ranker:
         '''get proximitity comparation between 2 terms
         '''
        
-        pl_1 = self.get_postinglist(t1,'positional_index')
-        pl_2 = self.get_postinglist(t2,'positional_index')
+        pl_1 = self.get_postinglist(t1,'positional')
+        pl_2 = self.get_postinglist(t2,'positional')
         
         match = 0
         match_docs = {}
@@ -406,24 +406,24 @@ def main(index_path,query_file_path,metric,index_,results_file):
     doc_single = load_doc_length('single')
     doc_stem = load_doc_length('stem')
     
-    lexicons_single = get_inverted_index(index_path,'single_term_index')
+    lexicons_single = get_inverted_index(index_path,'single')
 
-    lexicons_stem = get_inverted_index(index_path,'stem_index')
+    lexicons_stem = get_inverted_index(index_path,'stem')
     if index_ =='single':
         lexicons = lexicons_single
         doc_dict = doc_single
-        indexing = 'single_term_index'
+        #indexing = 'single_term_index'
     if index_ == 'stem':
         lexicons = lexicons_stem
         doc_dict = doc_stem
-        indexing = 'stem_index'
+        #indexing = 'stem_index'
 
     start = time.time()
     #doc_dict = get_doc_length(files,'single_term_index')
     for q_num,query in q_dict.items():
         with open(results_file,'a') as f:
         #for q_num,query in q_dict.items():
-            retrieved = retrieve_docs(lexicons,doc_dict,query,100,indexing,metric)
+            retrieved = retrieve_docs(lexicons,doc_dict,query,100,index_,metric)
             #with open(score_res,'w') as f:
             ranking = 0
             for file in retrieved:
