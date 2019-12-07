@@ -89,3 +89,19 @@ To see the implementations of `Expander` and `Reducer`, check: [relevance_feedba
 ### Query Expansion 
 
 In this experiment, I implement pseudo relevance feedback to do query expansion. 
+
+    $ python query_expansion.py [raw-results-path] [expanded-results-path] [n] [t] [threshold]
+
+* `[raw-results-path]` path of the retrieved results using raw queries. (Here: `./baseline/title.txt`)
+* `[expanded-results-path]` path to store the retrieved results using expanded query
+* `[n]` number of top documents (i.e. number of documents in relevant set)
+* `[t]` number of top terms in relevant set
+* `[threshold]` minimum document frequency for the terms to be added 
+
+example command:
+
+    python query_expansion.py ./baseline/title.txt ./relevance_feedback/expansion.txt 10 10 2
+
+In pseudo feedback system, there are several issues we want to consider. How many top documents are we going to use? How many top terms are we going to pick? Does the added terms make sense?
+
+
