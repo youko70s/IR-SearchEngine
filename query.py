@@ -378,18 +378,9 @@ def retrieve_docs(lexicons,doc_dict,query,top_N,index_,metric):
     if len(res)>top_N:
         res = res[:top_N]
     return res
-        
 
-def main(index_path,query_file_path,metric,index_,results_file):
-    ''' main function for processing the query and get the retrieved documents
-    '''
-    
-    metric = metric.upper()
-    print('Start retrieving relavant documents using '+metric+' '+'as metric with index: '+index_+'...'+'\n')
+def get_query_dict(query_file_path):
     queryfile = open(query_file_path)
-    if not os.path.exists(os.path.dirname(results_file)):
-        os.mkdir(os.path.dirname(results_file))
-    
     k = queryfile.read()
     q_list = []
     q_nums = []
@@ -401,7 +392,19 @@ def main(index_path,query_file_path,metric,index_,results_file):
     for no in querynums:
         q_nums.append(" ".join(no.split()))
     q_dict = dict(zip(q_nums,q_list))
+    return q_dict       
 
+def main(index_path,query_file_path,metric,index_,results_file):
+    ''' main function for processing the query and get the retrieved documents
+    '''
+    
+    metric = metric.upper()
+    print('Start retrieving relavant documents using '+metric+' '+'as metric with index: '+index_+'...'+'\n')
+    queryfile = open(query_file_path)
+    if not os.path.exists(os.path.dirname(results_file)):
+        os.mkdir(os.path.dirname(results_file))
+    
+    q_dict = get_query_dict(query_file_path)
 
     doc_single = load_doc_length('single')
     doc_stem = load_doc_length('stem')
