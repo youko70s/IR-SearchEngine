@@ -70,4 +70,22 @@ example command for dynamic query processing:
 
     $ python query_dynamic.py ./my_indexes/ ./data/queryfile.txt ./results/dynamic.txt
 
+## Relevance Feedback
 
+In this experiment, I implemented both query expansion and reduction techniques. I implemented pseudo relevance feedback (for query expansion), rocchio relevance feedback and index pruning (in the below, referring as 'common') for query reduction. I also implement a way to use both expansion and reduction. 
+
+To better compare those methods and how parameters could affect the performance, we set our baseline models as:
+
+* Expansion: use `title` in `queryfile.txt`. [title.txt](https://github.com/youko70s/IR-SearchEngine/blob/master/baseline/title.txt)
+* Reduction : use `narrative` in `queryfile.txt`. [narrative.txt](https://github.com/youko70s/IR-SearchEngine/blob/master/baseline/narrative.txt)
+* Expansion + Reduction: use `narrative` in `queryfile.txt`. [narrative.txt](https://github.com/youko70s/IR-SearchEngine/blob/master/baseline/narrative.txt)
+
+I have already put baseline results in [baseline](https://github.com/youko70s/IR-SearchEngine/tree/master/baseline). 
+
+Considering performances using different index and metric done before, the baseline results were retrieved based on `single term index` using `BM25` as metric. 
+
+To see the implementations of `Expander` and `Reducer`, check: [relevance_feedback.py](https://github.com/youko70s/IR-SearchEngine/blob/master/relevance_feedback.py)
+
+### Query Expansion 
+
+In this experiment, I implement pseudo relevance feedback to do query expansion. 
