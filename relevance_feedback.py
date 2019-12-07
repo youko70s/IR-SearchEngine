@@ -19,6 +19,7 @@ from query import *
 ######################### query expansion using pseudo relevance feedback algorithm
 # here, we are using single term index
 
+
 def topdoc_list(retrieved_):
     ''' given the retrieved top docs with tuples, return a list of top doc DOCNOS
     '''
@@ -36,7 +37,8 @@ def get_doc_length(collections,index_,top_docs):
     '''
     doc_dict = {}
     indexer = Indexer('stops.txt')
-    for file in collections:    
+    for f in collections:
+        file = './trec_files/'+ f  
         coll = open(file)
         doc = ""
         i = 0
@@ -143,7 +145,7 @@ class Expander:
             if criteria == 'frequency':
                 return f*idf
 
-    def topterm_list(self,q,t,criteria,df_threshold,retrieved_):
+    def topterm_list(self,q,t,criteria,df_threshold,top_docs):
         '''
         for a given q, and a given relevant doc set,
         we want to get the top terms from the top docs
@@ -152,7 +154,7 @@ class Expander:
         all_terms = {}
         res = []
         # create top doc list 
-        top_docs = topdoc_list(retrieved_)
+        #top_docs = topdoc_list(retrieved_)
         doc_term = get_doc_length(self.collections,self.index,top_docs)
         query_terms = preprocess_query(q,self.index)
         # we want to exclude the terms that are already in the query
@@ -171,7 +173,7 @@ class Expander:
         else:
             return res
     
-    def expand_query(self,q,t,criteria,df_threshold,retrieved):
+    def expand_query(self,q,t,criteria,df_threshold,top_docs):
         '''
         for a given query and based on a relevant doc set, we want to expand it
         then use the new query q' to do retrieving again
@@ -179,7 +181,7 @@ class Expander:
         #res = []
         q_terms = preprocess_query(q,self.index)
         #retrieved = retrieve_docs(self.lexicons,self.doc_len,q,n,self.index,metric)
-        added_terms = self.topterm_list(q,t,criteria,df_threshold,retrieved)
+        added_terms = self.topterm_list(q,t,criteria,df_threshold,top_docs)
         # add terms to q_terms
         for ele in added_terms:
             for key, value in ele.items():
@@ -234,7 +236,7 @@ class Reducer:
             
         return ' '.join(res)
         
-    def rochhio_reducer(self,q,threshold,retrieved_):
+    def rocchio_reducer(self,q,threshold,top_docs_narr):
         '''given a query(in our case, use the narratives), and given a relevant set(retrieved)
         reduce the query based on some threshold set for the query length
         '''
@@ -242,7 +244,7 @@ class Reducer:
         
         #retrieved_ = retrieve_docs(lexicons,single_len,q,index_,'BM25')
         narr_terms = preprocess_query(q,self.index)
-        top_docs_narr = topdoc_list(retrieved_)
+        #top_docs_narr = topdoc_list(retrieved_)
         irrelevant_docs = []
         for term in narr_terms:
             
