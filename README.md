@@ -130,11 +130,13 @@ In this experiment, I implemented two methods for reducing a query
 
 An example command would be:
 
-    $ python ./baseline/narrative.txt ./relevance_feedback/reduction.txt rocchio 10 0.5
+    $ python query_reduction.py ./baseline/narrative.txt ./relevance_feedback/reduction.txt rocchio 10 0.5
 
 About the two methodologies:
 
 * index pruning with query threshold (common): this is using the similar idea as index pruning. Based on the threshold (0~1), it will select the terms with largest tf*idf and use them as the reduced query. 
 * rocchio: this is based on rocchio algorithm.
 
-To measure 
+To measure the performance of the two methodologies, and the effect of threshold, I let the threshold to be 0.2,0.5,0.7 for both two methodologies. (notice that I fixed n to be 5). To make it easier, I also created a demo file for you to try out. To run it:
+
+    $ python 
