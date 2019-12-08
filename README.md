@@ -139,4 +139,24 @@ About the two methodologies:
 
 To measure the performance of the two methodologies, and the effect of threshold, I let the threshold to be 0.2,0.5,0.7 for both two methodologies. (notice that I fixed n to be 5). To make it easier, I also created a demo file for you to try out. To run it:
 
-    $ python 
+    $ python reduction_demo.py [results_dir]
+
+* `results_dir`: specify the directory you want to store the reduced demo results for various parameters.
+
+### Query Expansion + Reduction
+
+This is the implementation for using both expansion and reduction. 
+
+    $ python [raw-results-path] [new-results-path] [reduce-method] [n] [t] [df_threshold] [threshold]
+
+The parameters here are the same as mentioned above. 
+
+example command:
+
+    $ python ./baseline/narrative.txt ./relevance_feedback/both_implementation.txt common 5 10 2 0.5
+
+I have chosen the optimal parameters in this case and created a demo file for you to run directly. To run it:
+
+    $ python both_demo.py [results_dir]
+
+
