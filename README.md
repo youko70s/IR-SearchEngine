@@ -88,7 +88,7 @@ To see the implementations of `Expander` and `Reducer`, check: [relevance_feedba
 
 ### Query Expansion 
 
-In this experiment, I implement pseudo relevance feedback to do query expansion. 
+In this experiment, I implemented pseudo relevance feedback to do query expansion. 
 
     $ python query_expansion.py [raw-results-path] [expanded-results-path] [n] [t] [threshold]
 
@@ -100,8 +100,41 @@ In this experiment, I implement pseudo relevance feedback to do query expansion.
 
 example command:
 
-    python query_expansion.py ./baseline/title.txt ./relevance_feedback/expansion.txt 10 10 2
+    $ python query_expansion.py ./baseline/title.txt ./relevance_feedback/expansion.txt 10 10 2
 
 In pseudo feedback system, there are several issues we want to consider. How many top documents are we going to use? How many top terms are we going to pick? Does the added terms make sense?
 
+To measure these parameters and how they affect the quality of the engine, I tried different `n`, `t`, `df_threshold`. When measuring one parameter, I fixed the other two variables.
 
+- `n`: [50,20,5,1]
+- `t`: [20,10,5]
+- `df_threshold`: [10,5,2]
+
+To make it easier, I created a demo file for trying all these parameters. To run it:
+
+    $ python expansion_demo.py [results_dir]
+
+* `results_dir`: specify the directory you want to store the expansion demo results for various parameters.
+
+### Query Reduction
+
+In this experiment, I implemented two methods for reducing a query
+
+    $ python query_reduction.py [raw-results-path] [reduced-results-path] [reduce-method] [n] [threshold]
+
+* `[raw-results-path]` path of the retrieved results using raw queries. (Here: `./baseline/narrative.txt`)
+* `[expanded-results-path]` path to store the retrieved results using expanded query
+* `[reduce-method]` should be one the the following: `rocchio`, `common`
+* `[n]` number of top documents used for rocchio reduction (i.e. number of documents in relevant set)
+* `[threshold]` reduced size proportion of the raw query. Should be a value between 0-1.
+
+An example command would be:
+
+    $ python ./baseline/narrative.txt ./relevance_feedback/reduction.txt rocchio 10 0.5
+
+About the two methodologies:
+
+* index pruning with query threshold (common): this is using the similar idea as index pruning. Based on the threshold (0~1), it will select the terms with largest tf*idf and use them as the reduced query. 
+* rocchio: this is based on rocchio algorithm.
+
+To measure 
