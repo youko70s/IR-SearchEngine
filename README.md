@@ -160,3 +160,6 @@ I have chosen the optimal parameters in this case and created a demo file for yo
     $ python both_demo.py [results_dir]
 
 
+## Report 
+
+I conducted reports for further analysis and discussion over the results throughout the process. The reports are available upon request. If you are interested in, please email: [youko1970s@gmail.com](mailto:youko1970s@gmail.com).
