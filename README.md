@@ -3,7 +3,7 @@ This repository provides a classical implementation of information retrieval sea
 
 In this repo, I already provided some sample trec documents in [trec_files](https://github.com/youko70s/IR-SearchEngine/tree/master/trec_files). (See information about trec: [TREC](https://trec.nist.gov/)); I also provided a sample queryfile for retrieving relavant documents.
 
-Copy paste the following command line to clone this repository to your local:
+Copy and paste the following command line to clone this repository to your local:
 
     $ git clone https://github.com/youko70s/IR-SearchEngine.git
 
